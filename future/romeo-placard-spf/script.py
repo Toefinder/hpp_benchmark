@@ -59,6 +59,16 @@ def createGraspConstraint(gripperName, handleName):
   ps.createTransformationConstraint (name, gjn, hjn, (Transform(gpos) * Transform(hpos).inverse()).toTuple(), [True] * 6)
   return name
 
+def createPregraspComplement(gripperName, handleName):
+  name = "Straight path " + gripperName + " pregrasps " + handleName
+  gjn, gpos = robot.getGripperPositionInJoint(gripperName)
+  hjn, hpos = robot.getHandlePositionInJoint(handleName)
+  ps.hppcorba.problem.createTransformationConstraint2 (name, gjn, hjn, gpos, hpos, [False, True, True, True, True, False])
+  # grasp/complement constraint in transition pregrasp->grasp
+  # already ensures same rotation along z
+  ps.setConstantRightHandSide(name, True)
+  return name
+
 def benchConstraints (constraints, lockDofs):
   ps.client.basic.problem.resetConstraints()
   ps.resetConstraints ()
@@ -153,7 +163,22 @@ if lang == 'py':
   factory.setRules (rules)
   factory.generate ()
 
+l_hand_pregrasp_low = createPregraspComplement("romeo/l_hand", "placard/low")
+r_hand_pregrasp_high = createPregraspComplement("romeo/r_hand", "placard/high")
 cg.addConstraints (graph = True, constraints = commonConstraints)
+for edge in cg.edges:
+    if edge in ["romeo/l_hand > placard/low | 0-1_12",
+                "romeo/l_hand < placard/low | 0-1:1-0_21"]:
+        cg.addConstraints (edge = edge, constraints = Constraints(
+            numConstraints = [l_hand_pregrasp_low]))
+    elif edge in ["romeo/r_hand > placard/high | 1-0_12",
+                  "romeo/r_hand < placard/high | 0-1:1-0_21"]:
+        cg.addConstraints (edge = edge, constraints = Constraints(
+            numConstraints = [r_hand_pregrasp_high]))
+cg.addConstraints (node='romeo/l_hand > placard/low | 0-1_pregrasp',
+                   constraints = Constraints(numConstraints=[l_hand_pregrasp_low]))
+cg.addConstraints (node='romeo/r_hand > placard/high | 1-0_pregrasp',
+                   constraints = Constraints(numConstraints=[r_hand_pregrasp_high]))
 cg.initialize ()
 
 # Define initial and final configurations
