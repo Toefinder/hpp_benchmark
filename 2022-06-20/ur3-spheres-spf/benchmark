@@ -1,0 +1,35 @@
+0:00:02.634257
+Number nodes: 26
+Failed to plan path: hpp_idl.hpp.Error(msg='Failed to apply constraints in StraightPath::extract')
+0:00:03.020534
+Number nodes: 25
+0:00:02.092991
+Number nodes: 40
+0:00:02.875321
+Number nodes: 27
+0:00:02.870051
+Number nodes: 89
+0:00:02.510532
+Number nodes: 57
+0:00:02.892690
+Number nodes: 24
+0:00:03.486511
+Number nodes: 25
+0:00:02.608509
+Number nodes: 26
+0:00:02.754023
+Number nodes: 30
+0:00:02.403946
+Number nodes: 24
+0:00:03.151827
+Number nodes: 26
+Failed to plan path: hpp_idl.hpp.Error(msg='The graph should have been initialized first.')
+Failed to plan path: CORBA.COMM_FAILURE(omniORB.COMM_FAILURE_WaitingForReply, CORBA.COMPLETED_MAYBE)
+Traceback (most recent call last):
+  File "ur3-spheres-spf/script.py", line 162, in <module>
+    ps.clearRoadmap ()
+  File "/local/qale/devel/install/lib/python3/dist-packages/hpp/corbaserver/problem_solver.py", line 868, in clearRoadmap
+    return self.hppcorba.problem.clearRoadmap()
+  File "/local/qale/devel/install/lib/python3/dist-packages/hpp_stubs/corbaserver/problem_idl.py", line 731, in clearRoadmap
+    return self._obj.invoke("clearRoadmap", _0_hpp.corbaserver.Problem._d_clearRoadmap, args)
+omniORB.CORBA.TRANSIENT: CORBA.TRANSIENT(omniORB.TRANSIENT_ConnectFailed, CORBA.COMPLETED_NO)
